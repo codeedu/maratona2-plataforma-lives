@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+
+  backend:
+    build: ./backend
+    entrypoint: ./backend/.docker/entrypoint.sh
+    container_name: micro-live-manager-backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3000:3000
+      - 9000:9000
+      - 5000:5000
+    volumes:
+      - .:/home/node/app
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    entrypoint: ./frontend/.docker/entrypoint.sh
+    container_name: micro-live-manager-frontend
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3001:3000
+    volumes:
+      - .:/home/node/app
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: micro-live-manager-db
+    restart: always
+    tty: true
+    ports:
+      - 33006:3306
+    volumes:
+      - ./backend/.docker/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_DATABASE=micro_live_manager
+    networks:
+      - app-network
+
+  redis:
+    image: redis:alpine
+    container_name: micro-live-manager-redis
+    volumes:
+      - ./backend/.docker/redisdata:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

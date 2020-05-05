@@ -1,0 +1,17 @@
+FROM node:10-slim
+
+USER node
+
+RUN mkdir -p /home/node/app
+
+WORKDIR /home/node/app
+
+COPY --chown=node backend/package*.json ./
+
+RUN npm install
+
+COPY --chown=node ./backend .
+
+RUN npm run build
+
+CMD ["npm", "run", "start:prod"]
