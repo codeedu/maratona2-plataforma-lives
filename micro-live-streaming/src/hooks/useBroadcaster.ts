@@ -74,7 +74,7 @@ const useBroadcaster = (options: UseBroadcasterOptions) => {
         const iceServers = getIceServers(); //stun server e turn server
         // @ts-ignore
         peerRef.current = new Peer({
-            ...(iceServers && {
+            ...(iceServers!==null && {
                 config: {
                     iceServers: [...iceServers]
                 }

@@ -36,7 +36,7 @@ const useViewer = (options: UseViewerOptions) => {
         const iceServers = getIceServers();
         // @ts-ignore
         peerRef.current = new Peer({
-            ...(iceServers && {config: {
+            ...(iceServers!==null && {config: {
                     iceServers: [...iceServers]
                 }}),
             host: process.env.REACT_APP_MICRO_GENERATOR_PEER_DOMAIN,
