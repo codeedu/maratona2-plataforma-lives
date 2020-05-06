@@ -3,6 +3,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {Live} from "./live.model";
 import {LiveController} from "./live.controller";
 import {LiveSubscriberService} from "./live-subscriber/live-subscriber.service";
+import {LiveSocketService} from "./live-socket/live-socket.service";
 import {ConfigService} from "@nestjs/config";
 
 @Module({
@@ -14,6 +15,7 @@ import {ConfigService} from "@nestjs/config";
     ],
     providers: [
         LiveSubscriberService,
+        LiveSocketService,
         ConfigService
     ]
 })

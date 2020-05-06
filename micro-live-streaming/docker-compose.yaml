@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+
+  app:
+    build: .
+    container_name: micro-live-streaming
+    entrypoint: ./.docker/entrypoint.sh
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3002:3000
+    volumes:
+      - .:/app
+    tty: true
