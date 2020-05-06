@@ -39,9 +39,9 @@ const useViewer = (options: UseViewerOptions) => {
             // ...(iceServers!==null && {config: {
             //         iceServers: [...iceServers]
             //     }}),
-            config: {
-                iceServers: [{"url": "stun:stun.l.google.com:19302"}, {"url": "turn:fullcycle@turn.fullcycle.com.br:8443", "username": "fullcycle", "credential": "fullcycle"}]
-            },
+            // config: {
+            //     iceServers: [{"url": "stun:stun.l.google.com:19302"}, {"url": "turn:fullcycle@turn.fullcycle.com.br:8443", "username": "fullcycle", "credential": "fullcycle"}]
+            // },
             host: process.env.REACT_APP_MICRO_GENERATOR_PEER_DOMAIN,
             // @ts-ignore
             port: parseInt(process.env.REACT_APP_MICRO_GENERATOR_PEER_PORT)
