@@ -5,7 +5,8 @@ import express = require('express');
 import http = require('http');
 import cors = require('cors');
 import {EntityNotFoundExceptionFilter} from "./filters/entity-not-found-exception.filter";
-
+import {MicroserviceOptions, Transport} from "@nestjs/microservices";
+import {join}  from 'path';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const {ExpressPeerServer} = require('peer');
 
@@ -13,7 +14,7 @@ async function createPeerServer() {
     const corsOptions = {
         origin: function (origin, callback) {
             const ALLOW_ORIGINS = process.env.SOCKET_IO_ALLOW_ORIGINS;
-            const originNormalized = origin.split(':').length === 1? `${origin}:80`: origin;
+            const originNormalized = origin.split(':').length === 2? `${origin}:80`: origin;
             const hasOrigin = ALLOW_ORIGINS.split(',').indexOf(originNormalized) !== -1;
             hasOrigin || ALLOW_ORIGINS === '*:*'
                 ? callback(null, true)
@@ -35,8 +36,16 @@ async function bootstrap() {
 
     const app = await NestFactory.create(AppModule, {cors: true,});
     app.useGlobalFilters(new EntityNotFoundExceptionFilter());
-
     app.useWebSocketAdapter(new RedisIoAdapter(app));
+
+    app.connectMicroservice<MicroserviceOptions>({
+        transport: Transport.GRPC,
+        options: {
+            url: process.env.GRPC_SERVER_URL,
+            package: 'live',
+            protoPath: join(__dirname, 'live/live.proto'),
+        },
+    });
 
     await app.startAllMicroservicesAsync();
 
