@@ -106,7 +106,7 @@ const useViewer = (options: UseViewerOptions) => {
                 socket.disconnect();
             }
         }
-    }, [start, socket, liveSlug, connectBroadcaster, enqueueSnackbar]);
+    }, [start, socket, peerRef, liveSlug, connectBroadcaster, enqueueSnackbar]);
 
     useEffect(() => {
         if(error || !socket){

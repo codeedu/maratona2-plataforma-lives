@@ -14,6 +14,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import StopIcon from '@material-ui/icons/Stop';
 import {blue, teal} from "@material-ui/core/colors";
 import LiveStopDialog from "../components/LiveStopDialog";
+import Chat from "../components/Chat";
+
 
 const localTheme = (theme: Theme): Theme => ({
     ...theme,
@@ -69,6 +71,8 @@ const Broadcaster = () => {
         password: "",
         is_broadcaster: true
     });
+    const [finishRoom, setFinishRoom] = useState(false);
+
     const {
         live,
         error,
@@ -114,6 +118,7 @@ const Broadcaster = () => {
                         setOpenLiveStopDialog(false);
                         if(stop) {
                             setStopLive(stop);
+                            setFinishRoom(true);
                         }
                     }}
                 />
@@ -152,6 +157,13 @@ const Broadcaster = () => {
                         />
                         {live && <LiveInformation live={live} usersConnected={usersConnected}/>}
                     </Box>
+                    <Chat
+                        className={classes.chat}
+                        user={userInfo}
+                        room={slug}
+                        finishRoom={finishRoom}
+                        disabled={error!==null}
+                    />
                 </ContainerVideoChat>
             </div>
         </MuiThemeProvider>

@@ -11,6 +11,7 @@ import LiveInformation from "../components/LiveInformation";
 import LiveError from "../components/LiveError";
 import {blue, teal} from "@material-ui/core/colors";
 import {useEffect} from "react";
+import Chat from "../components/Chat";
 
 const localTheme = (theme: Theme): Theme => ({
     ...theme,
@@ -109,6 +110,12 @@ const Viewer = () => {
                         />
                         {live && <LiveInformation live={live} usersConnected={usersConnected}/>}
                     </Box>
+                    <Chat
+                        user={userInfo}
+                        className={classes.chat}
+                        room={slug}
+                        disabled={error !== null}
+                    />
                 </ContainerVideoChat>
             </div>
         </MuiThemeProvider>

@@ -11,3 +11,10 @@ export interface Live{
     slug: string;
     status: LiveStatus;
 }
+
+export interface ChatMessage {
+    user_name: string;
+    email: string;
+    content: string;
+    is_broadcaster: boolean;
+}
