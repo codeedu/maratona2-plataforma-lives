@@ -15,7 +15,7 @@ interface UseViewerOptions {
 const useViewer = (options: UseViewerOptions) => {
     const {start, liveSlug, videoRef} = options;
     const socket = useMemo(() => {
-        if (!start){
+        if (!start) {
             return null;
         }
         return io(`${process.env.REACT_APP_MICRO_GENERATOR_URL}/live`)
@@ -28,7 +28,7 @@ const useViewer = (options: UseViewerOptions) => {
 
     const connectBroadcaster = useCallback((data: any) => {
         console.log(data);
-        if(!data.peer_id){
+        if (!data.peer_id) {
             return;
         }
         console.log('new-broadcaster', data.peer_id);
@@ -36,12 +36,11 @@ const useViewer = (options: UseViewerOptions) => {
         const iceServers = getIceServers();
         // @ts-ignore
         peerRef.current = new Peer({
-            // ...(iceServers!==null && {config: {
-            //         iceServers: [...iceServers]
-            //     }}),
-            // config: {
-            //     iceServers: [{"url": "stun:stun.l.google.com:19302"}, {"url": "turn:fullcycle@turn.fullcycle.com.br:8443", "username": "fullcycle", "credential": "fullcycle"}]
-            // },
+            ...(iceServers !== null && {
+                config: {
+                    iceServers: [...iceServers]
+                }
+            }),
             host: process.env.REACT_APP_MICRO_GENERATOR_PEER_DOMAIN,
             // @ts-ignore
             port: parseInt(process.env.REACT_APP_MICRO_GENERATOR_PEER_PORT)
@@ -71,9 +70,10 @@ const useViewer = (options: UseViewerOptions) => {
     }, [peerRef, videoRef]);
 
     useEffect(() => {
-        if(error){
+        if (error) {
             return;
         }
+
         async function load() {
             try {
                 setLive(await getLive(liveSlug));
@@ -102,17 +102,17 @@ const useViewer = (options: UseViewerOptions) => {
                 peerRef.current.disconnect();
                 socket.disconnect();
             });
-            socket.emit('join', { slug: liveSlug});
+            socket.emit('join', {slug: liveSlug});
         });
         return () => {
-            if(socket.connected){
+            if (socket.connected) {
                 socket.disconnect();
             }
         }
     }, [start, socket, peerRef, liveSlug, connectBroadcaster, enqueueSnackbar]);
 
     useEffect(() => {
-        if(error || !socket){
+        if (error || !socket) {
             return;
         }
 

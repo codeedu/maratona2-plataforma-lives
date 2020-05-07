@@ -94,7 +94,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
         }
 
         socket.on('connect', () => {
-            console.log('connected');
+            console.log('chat connected');
             socket.on(
                 'get-messages',
                 (data: ChatMessage[]) => setChatMessages(data)

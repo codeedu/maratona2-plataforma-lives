@@ -74,14 +74,11 @@ const useBroadcaster = (options: UseBroadcasterOptions) => {
         const iceServers = getIceServers(); //stun server e turn server
         // @ts-ignore
         peerRef.current = new Peer({
-            // ...(iceServers !== null && {
-            //     config: {
-            //         iceServers: [...iceServers]
-            //     }
-            // }),
-            // config: {
-            //     iceServers: [{"url": "stun:stun.l.google.com:19302"}, {"url": "turn:fullcycle@turn.fullcycle.com.br:8443", "username": "fullcycle", "credential": "fullcycle"}]
-            // },
+            ...(iceServers !== null && {
+                config: {
+                    iceServers: [...iceServers]
+                }
+            }),
             host: process.env.REACT_APP_MICRO_GENERATOR_PEER_DOMAIN,
             // @ts-ignore
             port: parseInt(process.env.REACT_APP_MICRO_GENERATOR_PEER_PORT)
