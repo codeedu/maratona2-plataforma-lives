@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package education.code.codeedu;
+
+option go_package = "pb";
+
+message Bot {
+    string name = 1;
+    string description = 2;
+    repeated Command command = 6;
+}
+
+message Command {
+    string command = 1;
+    string answer = 2;
+}
+
+message NewBotRequest {
+    Bot bot = 1;
+}
+
+
+message NewBotResponse {
+    string bot_id = 1;
+}
+
+message AnswerRequest {
+    string bot_name = 1;
+    string command = 2;
+}
+
+message AnswerResponse {
+    string answer = 1;
+}
+
+service BotService {
+    rpc CreateBot (NewBotRequest) returns (NewBotResponse) {};
+    rpc Answer (AnswerRequest) returns (AnswerResponse) {};
+}
