@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+
+  app:
+    build: .
+    entrypoint: ./.docker/entrypoint.sh
+    container_name: micro-live-chat-app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3003:3003
+    volumes:
+      - .:/home/node/app
+    networks:
+      - app-network
+      - micro-live-manager_app-network
+      - rabbitmq_micro-live
+      - codebot_default
+
+  redis:
+    image: redis:alpine
+    container_name: micro-live-chat-redis
+    volumes:
+      - ./.docker/redisdata:/data
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: micro-live-chat-db
+    restart: always
+    tty: true
+    ports:
+      - 33007:3306
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_DATABASE=micro_live_chat
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+  micro-live-manager_app-network:
+    external: true
+  maratona2-codebot_default:
+    external: true
+  rabbitmq_micro-live:
+    external: true
