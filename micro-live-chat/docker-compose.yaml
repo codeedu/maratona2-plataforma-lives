@@ -48,7 +48,7 @@ networks:
     driver: bridge
   micro-live-manager_app-network:
     external: true
-  maratona2-codebot_default:
+  codebot_default:
     external: true
   rabbitmq_micro-live:
     external: true
