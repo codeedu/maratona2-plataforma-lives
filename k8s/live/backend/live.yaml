@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: live-conf
+  labels:
+    name: live-conf
+data:
+  env: |
+    APP_PORT=3000
+    PEER_SERVER_PORT=9000
+    GRPC_SERVER_URL=0.0.0.0:5000
+    
+    TYPEORM_CONNECTION=mysql
+    TYPEORM_HOST=live-mysql-service
+    TYPEORM_USERNAME=root
+    TYPEORM_PASSWORD=a1s2d3f4
+    TYPEORM_DATABASE=micro_live_generator
+    TYPEORM_PORT=3306
+    TYPEORM_ENTITIES=src/**/*.entity.ts
+    TYPEORM_MIGRATIONS=src/migrations/**/*.ts
+    TYPEORM_MIGRATIONS_DIR=src/migrations
+    
+    REDIS_HOST=live-redis-service
+    REDIS_PORT=6379
+    
+    SOCKET_IO_ALLOW_ORIGINS=http://live.fullcycle.com.br:80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: live
+spec:
+  selector:
+    matchLabels:
+      app: live
+
+  template:
+    metadata:
+      labels:
+        app: live
+    spec:
+      containers:
+        - name: live
+          image: wesleywillians/maratona2-live
+          ports:
+            - containerPort: 3000
+            - containerPort: 5000
+            - containerPort: 9000
+          envFrom:
+            - configMapRef:
+                name: live-conf
+          volumeMounts:
+          - name: live-conf
+            subPath: .env
+            mountPath: /home/node/app/.env
+
+      volumes:
+      - name: live-conf
+        configMap:
+          name: live-conf
+          items:
+            - key: env
+              path: .env
+          
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: live-service
+  labels:
+    app: live-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: nodejs
+      port: 3000
+    - name: grpc
+      port: 5000
+    - name: webrtc
+      port: 9000
+  selector:
+    app: live

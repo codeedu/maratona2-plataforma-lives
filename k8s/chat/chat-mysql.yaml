@@ -1,0 +1,69 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: chat-mysql
+  labels:
+    app: chat-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chat-mysql
+    spec:
+      containers:
+      - image: mysql:5.7
+        args:
+          - "--ignore-db-dir=lost+found"
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: chat-mysql-pv-claim
+
+---
+    
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: chat-mysql-pv-claim
+  labels:
+    app: chat-mysql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi    
+
+---
+    
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-mysql-service
+  labels:
+    app: chat-mysql-service
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: chat-mysql
+  clusterIP: None    

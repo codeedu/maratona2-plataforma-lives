@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streaming
+spec:
+  selector:
+    matchLabels:
+      app: streaming
+
+  template:
+    metadata:
+      labels:
+        app: streaming
+    spec:
+      containers:
+        - name: streaming
+          image: wesleywillians/maratona2-streaming:latest
+          ports:
+            - containerPort: 80
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: streaming-service
+  labels:
+    app: streaming-service
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+  selector:
+    app: streaming

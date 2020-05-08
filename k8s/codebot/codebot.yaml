@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: code-conf
+  labels:
+    name: code-conf
+data:
+  env: |
+    dbType="postgres"
+    dsn="dbname=codebot sslmode=disable user=postgres password=root port=5432 host=codebot-postgres"
+    
+    dbTypeTest="sqlite3"
+    dsnTest=":memory:"
+    
+    env="dev"
+    debug=true
+    AutoMigrateDb=true
+---
+    
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codebot
+spec:
+  selector:
+    matchLabels:
+      app: codebot
+
+  template:
+    metadata:
+      labels:
+        app: codebot
+    spec:
+      containers:
+        - name: codebot
+          image: wesleywillians/maratona2-codebot
+          ports:
+            - containerPort: 50051
+          volumeMounts:
+          - name: code-conf
+            subPath: .env
+            mountPath: /.env
+
+      volumes:
+      - name: code-conf
+        configMap:
+          name: code-conf
+          items:
+            - key: env
+              path: .env
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: codebot-service
+  labels:
+    app: codebot-service
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 50051
+  selector:
+    app: codebot
