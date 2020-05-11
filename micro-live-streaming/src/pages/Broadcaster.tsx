@@ -117,7 +117,7 @@ const Broadcaster = () => {
                     onClose={(stop) => {
                         setOpenLiveStopDialog(false);
                         if(stop) {
-                            setStopLive(stop);
+                            setStopLive(true);
                             setFinishRoom(true);
                         }
                     }}

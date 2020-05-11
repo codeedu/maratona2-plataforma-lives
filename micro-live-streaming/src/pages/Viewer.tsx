@@ -111,8 +111,8 @@ const Viewer = () => {
                         {live && <LiveInformation live={live} usersConnected={usersConnected}/>}
                     </Box>
                     <Chat
-                        user={userInfo}
                         className={classes.chat}
+                        user={userInfo}
                         room={slug}
                         disabled={error !== null}
                     />

@@ -118,20 +118,19 @@ export class RoomsService implements OnGatewayInit {
             const value: any = await redisGet(client.id);
             if (!value) {
                 const error = new Error('Not authorized');
+                error.name = 'NotAuthorized'
                 throw error;
             }
             const {user_name, email, is_broadcaster, live_slug} = JSON.parse(value);
             const live = await this.getLive(client, live_slug);
             this.validateIsPending(live);
 
-            if (data.content.startsWith('/')) {
+            if (data.content.startsWith('/')) { // /test ola
                 const service: BotRpc = this.botRpc.getService('BotService');
                 const botName = data.content.split('/')[1].split(' ')[0];
+                const command = data.content.split(' ')[1]
                 service
-                    .answer({
-                        botName,
-                        command: data.content.split(' ')[1]
-                    })
+                    .answer({botName,command})
                     .toPromise()
                     .then((result) => {
                         console.log(result);

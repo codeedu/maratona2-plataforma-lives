@@ -52,13 +52,6 @@ const useStyles = makeStyles(theme => ({
     itemMessage: {
         fontSize: '0.8rem'
     },
-    itemAvatar: {
-        minWidth: theme.spacing(5)
-    },
-    avatar: {
-        width: theme.spacing(3),
-        height: theme.spacing(3),
-    },
     actions: {
         padding: '16px',
         backgroundColor: grey['900']
@@ -95,15 +88,9 @@ export const Chat: React.FC<ChatProps> = (props) => {
 
         socket.on('connect', () => {
             console.log('chat connected');
-            socket.on(
-                'get-messages',
-                (data: ChatMessage[]) => setChatMessages(data)
-            );
-            socket.on(
-                'new-message',
-                (data: ChatMessage) => {
-                    setChatMessages((prevState => [...prevState, data]))
-                }
+            socket.on('get-messages', (data: ChatMessage[]) => setChatMessages(data));
+            socket.on('new-message', (data: ChatMessage) =>
+                setChatMessages((prevState => [...prevState, data]))
             );
             socket.on('finish-room', () => {
                 setDisabled(true);
@@ -123,6 +110,10 @@ export const Chat: React.FC<ChatProps> = (props) => {
             }
         }
     }, [socket, room, user]);
+
+    useEffect(() => {
+        setDisabled(disabledProp);
+    }, [disabledProp]);
 
     useEffect(() => {
         if (!finishRoom || !socket) {
@@ -148,7 +139,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
 
         messageRef.current.value = "";
 
-        if(message.startsWith('/')){
+        if (message.startsWith('/')) {
             return;
         }
 
@@ -199,7 +190,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
             {
                 !finishRoom && !disabled && <CardActions className={classes.actions}>
                     <ListItem className={classes.item}>
-                        <ChatAvatar email={user ? user.email : ''}/>
+                        <ChatAvatar email={user?.email ?? ''}/>
                         <TextField
                             inputRef={messageRef}
                             style={{width: '100%'}}
