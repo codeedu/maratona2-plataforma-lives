@@ -27,9 +27,47 @@ metadata:
   labels:
     app: streaming-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80
   selector:
     app: streaming
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: streaming-gateway
+spec:
+  selector:
+    istio: ingressgateway 
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:  
+    - "*"
+
+---
+  
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: streaming-vs
+spec:
+  hosts:
+  - "live.fullcycle.com.br"
+  gateways:
+  - streaming-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: streaming-service

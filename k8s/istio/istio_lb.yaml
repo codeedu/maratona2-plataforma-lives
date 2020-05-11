@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"istio-ingressgateway","istio":"ingressgateway","operator.istio.io/component":"IngressGateways","operator.istio.io/managed":"Reconcile","operator.istio.io/version":"1.5.1","release":"istio"},"name":"istio-ingressgateway","namespace":"istio-system"},"spec":{"ports":[{"name":"status-port","port":15020,"targetPort":15020},{"name":"http2","port":80,"targetPort":80},{"name":"https","port":443},{"name":"grpc","port":5000, "targetPort":5000},{"name":"websockets","port":3003, "targetPort":3003},{"name":"grpc","port":50051, "targetPort":50051},{"name":"peerjs","port":9000, "targetPort":9000},{"name":"nodejs","port":3000, "targetPort":3000},{"name":"kiali","port":15029,"targetPort":15029},{"name":"prometheus","port":15030,"targetPort":15030},{"name":"grafana","port":15031,"targetPort":15031},{"name":"tracing","port":15032,"targetPort":15032},{"name":"tcp","port":31400,"targetPort":31400},{"name":"tls","port":15443,"targetPort":15443}],"selector":{"app":"istio-ingressgateway","istio":"ingressgateway"},"type":"LoadBalancer"}}
+  creationTimestamp: null
+  labels:
+    app: istio-ingressgateway
+    istio: ingressgateway
+    operator.istio.io/component: IngressGateways
+    operator.istio.io/managed: Reconcile
+    operator.istio.io/version: 1.5.1
+    release: istio
+  name: istio-ingressgateway
+  selfLink: /api/v1/namespaces/istio-system/services/istio-ingressgateway
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: status-port
+    nodePort: 30884
+    port: 15020
+    protocol: TCP
+    targetPort: 15020
+  - name: http2
+    nodePort: 32006
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: https
+    nodePort: 30531
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  - name: kiali
+    nodePort: 31812
+    port: 15029
+    protocol: TCP
+    targetPort: 15029
+  - name: prometheus
+    nodePort: 30874
+    port: 15030
+    protocol: TCP
+    targetPort: 15030
+  - name: grafana
+    nodePort: 31013
+    port: 15031
+    protocol: TCP
+    targetPort: 15031
+  - name: nodejs
+    nodePort: 31024
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  - name: grpc
+    nodePort: 31025
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  - name: peerjs
+    nodePort: 31026
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  
+  - name: grpc2
+    nodePort: 31028
+    port: 50051
+    protocol: TCP
+    targetPort: 50051
+  
+  - name: websocket
+    nodePort: 31027
+    port: 3003
+    protocol: TCP
+    targetPort: 3003  
+  - name: tracing
+    nodePort: 31523
+    port: 15032
+    protocol: TCP
+    targetPort: 15032
+  - name: tcp
+    nodePort: 31458
+    port: 31400
+    protocol: TCP
+    targetPort: 31400
+  - name: tls
+    nodePort: 30689
+    port: 15443
+    protocol: TCP
+    targetPort: 15443
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}

@@ -58,9 +58,51 @@ metadata:
   labels:
     app: codebot-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-    - protocol: TCP
+    - name: grpc
+      protocol: TCP
       port: 50051
   selector:
     app: codebot
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: codebot-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 50051
+      name: grpc
+      protocol: grpc
+    hosts:  
+    - "*"
+---
+  
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: codebot-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - codebot-gateway
+  
+  http:
+    - match:
+      - uri:
+          prefix: /
+      - port: 50051
+      route:
+      - destination:
+          port:
+            number: 50051
+          host: codebot-service
+
+  

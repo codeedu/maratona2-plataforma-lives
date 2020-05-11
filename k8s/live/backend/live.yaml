@@ -74,13 +74,160 @@ metadata:
   labels:
     app: live-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: nodejs
       port: 3000
-    - name: grpc
-      port: 5000
+  selector:
+    app: live
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: live-service-peerjs
+  labels:
+    app: live-service
+spec:
+  type: NodePort
+  ports:
     - name: webrtc
       port: 9000
   selector:
-    app: live
+    app: live  
+    
+---
+  
+apiVersion: v1
+kind: Service
+metadata:
+  name: live-service-grpc
+  labels:
+    app: live-service-grpc
+spec:
+  type: ClusterIP
+  ports:
+    - name: grpc
+      protocol: TCP
+      port: 5000
+  selector:
+    app: live    
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: live-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 3000
+      name: http
+      protocol: HTTP
+    hosts:  
+    - "manager.live.fullcycle.com.br"
+
+--- 
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: live-vs
+spec:
+  hosts:
+  - "manager.live.fullcycle.com.br"
+  gateways:
+  - live-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    - port: 3000
+    route:
+    - destination:
+        port:
+          number: 3000
+        host: live-service
+        
+---        
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: live-gateway-peerjs
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 9000
+      name: http
+      protocol: HTTP
+    hosts:  
+    - "manager.live.fullcycle.com.br"
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: live-vs-peerjs
+spec:
+  hosts:
+  - "manager.live.fullcycle.com.br"
+  gateways:
+  - live-gateway-peerjs
+  http:
+  - match:
+    - uri:
+        prefix: /
+    - port: 9000
+    route:
+    - destination:
+        port:
+          number: 9000
+        host: live-service-peerjs
+
+---        
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: live-gateway-grpc
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 5000
+      name: grpc
+      protocol: grpc
+    hosts:  
+    - "*"
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: live-vs-grpc
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - live-gateway-grpc
+  
+  http:
+    - match:
+      - uri:
+          prefix: /
+      - port: 5000
+      route:
+      - destination:
+          port:
+            number: 5000
+          host: live-service-grpc
