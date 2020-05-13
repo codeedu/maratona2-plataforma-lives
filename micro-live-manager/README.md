@@ -46,4 +46,4 @@ http://localhost:3001
 
 ### Importante
 
-Cria uma live para iniciar o processo de transmissão de uma live
+Crie uma live para iniciar o processo de transmissão de uma live
