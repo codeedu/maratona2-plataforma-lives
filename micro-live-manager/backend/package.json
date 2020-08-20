@@ -32,7 +32,7 @@
     "@nestjs/typeorm": "^7.0.0",
     "@nestjs/websockets": "^7.0.7",
     "@types/lodash": "^4.14.150",
-    "bcrypt": "^4.0.1",
+    "bcrypt": "^5.0.0",
     "grpc": "^1.24.2",
     "lodash": "^4.17.15",
     "mysql": "^2.18.1",
