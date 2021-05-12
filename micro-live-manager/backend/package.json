@@ -33,7 +33,7 @@
     "@nestjs/websockets": "^7.0.7",
     "@types/lodash": "^4.14.150",
     "bcrypt": "^4.0.1",
-    "grpc": "^1.24.2",
+    "grpc": "^1.24.9",
     "lodash": "^4.17.15",
     "mysql": "^2.18.1",
     "peer": "^0.5.2",
